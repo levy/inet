@@ -49,6 +49,8 @@ namespace tcp {
 
 Define_Module(TCP);
 
+simsignal_t TCP::tcpConnectionAddedSignal = registerSignal("tcpConnectionAdded");
+
 #define EPHEMERAL_PORTRANGE_START    1024
 #define EPHEMERAL_PORTRANGE_END      5000
 
@@ -419,6 +421,8 @@ void TCP::addSockPair(TCPConnection *conn, L3Address localAddr, L3Address remote
     // mark port as used
     if (localPort >= EPHEMERAL_PORTRANGE_START && localPort < EPHEMERAL_PORTRANGE_END)
         usedEphemeralPorts.insert(localPort);
+
+    emit(tcpConnectionAddedSignal, conn);
 }
 
 void TCP::updateSockPair(TCPConnection *conn, L3Address localAddr, L3Address remoteAddr, int localPort, int remotePort)
